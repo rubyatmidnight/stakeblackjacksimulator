@@ -117,14 +117,20 @@ class BlackjackSim:
             return True
         if not hand.soft and hand.total == 9 and dUpcard in ['3', '4', '5', '6']:
             return True
+        if hand.soft and hand.total >= 13 and hand.total <= 18 and dUpcard in ['5', '6']:
+            return True
         return False
 
     def _shouldHit(self, hand: Hand, dUpcard: str) -> bool:
         if hand.total >= 17:
             return False
             
-        if hand.soft and hand.total <= 17:
-            return True
+        if hand.soft:
+            if hand.total <= 17:
+                return True
+            if hand.total == 18:
+                return dUpcard in ['9', '10', 'J', 'Q', 'K', 'A']
+            return False
             
         if hand.total <= 11:
             return True
@@ -153,7 +159,7 @@ class BlackjackSim:
         dHand = calcHand(dCards)
         idx = startIdx
         
-        while dHand.total < 17:  # Stand on S17
+        while dHand.total < 17:
             if idx >= len(cards):
                 break
             dCards.append(cards[idx][2])
@@ -328,4 +334,4 @@ if __name__ == "__main__":
     
     # Random seeds
     print("\nRunning with random seeds...")
-    runSim(numGames=100000)
+    runSim(numGames=500000)
